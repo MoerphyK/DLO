@@ -11,21 +11,19 @@ y soll eine Summe aus einer Teilmenge m von n sein. m <= n
 
 '''
 import random
-from tkinter import N
-
-from sqlalchemy import false
+import numpy as np
 
 # Initialisierung
-inputCount = 10
-nEpochs = 6000 # 1000 viel zu klein, 2000 knap zu klein, 3000 fast perfekt; lr=0.001
-lr = 0.001
-
-n = 5
+inputCount = 10 # Anzahl Inputs
+nEpochs = 20000
+batchSize = 2
+lr = 0.0001
+n = 6 # Dimension Inputs !! max 10
 m = 3
 
-
-inputs = [[random.randint(-10,10) for i in range(n)] for i in range(inputCount)] 
-weights = [2,3,4,5,6]
+weights = [3,2,3,4,1,2,3,4,5,0]
+weights = weights[:n]
+inputs = [[random.randint(-5, 5) for i in range(n)] for i in range(inputCount)]
 
 ## Ungenutzt
 def loss_function(y, y_caret):
@@ -35,45 +33,61 @@ def loss_function(y, y_caret):
 def partInt(y_dach, y, x):
     return (y_dach - y)*x
 
+def averageList(list,i):
+    sum = 0
+    for e in list:
+        sum += e[i]
+    return sum/len(list)
+
 if __name__ == '__main__':
     print(f"Start Weights: {weights}")
     print("##############")
     for j in range(0, nEpochs):
-        print("#################")
-        print("## Neue Epoche ##")
-        print("#################")
-        for input in inputs:
-            print(f"Input: {input}; m = {m}")
-            # Wunschziel, Ergebnis und Abweichung berechnen
-            y = 0
-            for i in range(m):
-                y += input[i]
+        # print("#################")
+        # print("## Neue Epoche ##")
+        # print("#################")
 
-            y_caret = 0
-            for i in range(n):
-               y_caret = input[i] * weights[i]
-               
-            d = y_caret-y
+        random.shuffle(inputs)
+        batches = np.array_split(inputs,inputCount/batchSize)
 
-            if(abs(d) > 0):
+        for batch in batches:
+            modifications = []
+            for input in batch:
+                #print(f"Input: {input}; m = {m}")
+                # Wunschziel, Ergebnis und Abweichung berechnen
+                y = 0
+                for i in range(m):
+                    y += input[i]
+
+                y_caret = 0
+                for i in range(n):
+                   y_caret += input[i] * weights[i]
+
+                d = y_caret-y
+
                 # Gewichte anpassen
+
+                mod_list = []
                 for i in range(n):
                     partial_w = partInt(y_caret,y,input[i])
-                    weights[i] -= (lr*partial_w)
+                    mod_list.append(weights[i] - (lr*partial_w))
+                modifications.append(mod_list)
 
-            ## Output only
-            y = 0
-            for i in range(m):
-                y += input[i]
-
-            y_caret = 0
             for i in range(n):
-               y_caret = input[i] * weights[i]
+                weights[i] = averageList(modifications,i)
 
-            d = y_caret-y
 
-            print(f"Weights:{weights}")
-            print(f"Current: {y_caret}; Target: {y}")
-            print(f"Abweichung y-^y: {d}")
-            print("##############")
-            
+    for input in inputs:
+        y = 0
+        y_all = 0
+        y_caret = 0
+        for i in range(len(input)):
+            if i < m:
+                y += input[i]
+            y_all += input[i]
+            y_caret += input[i] * weights[i]
+
+        print(f"Weights:{weights}")
+        print(f"Input:{input}")
+        print(f"Current: {y_caret}; Target m = {m}: {y}; Target all: {y_all}")
+        print("##############")
