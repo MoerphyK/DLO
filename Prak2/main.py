@@ -26,8 +26,8 @@ class Point:
 # Initialisierung
 w1 = -1
 w2 = -2
-nEpochs = 10
-lr = 0.01
+nEpochs = 3000 # 1000 viel zu klein, 2000 knap zu klein, 3000 fast perfekt; lr=0.001
+lr = 0.001
 
 ## Ungenutzt
 def loss_function(y, y_caret):
@@ -63,6 +63,7 @@ if __name__ == '__main__':
 
             print(f"Abweichung y-^y: {d}")
 
+            '''
             ## Zweiter Lösungsansatz
             # Part Ableitung nach W1 -> Falls positiv w1 verkleinern
             partial_w1 = partInt(y_caret, y, input[i].x)
@@ -80,12 +81,8 @@ if __name__ == '__main__':
             else:
                 w2 += (lr * partial_w2)
 
-            # Ausgabe
-            print(f"Weights:{w1},{w2} -> {input[i].x * w1 + input[i].y * w2}")
-            print(f"Aktuelles Ergebnis: {input[0].x * w1},{input[0].y * w2}")
-            print("##############")
-
             '''
+            
             ## Erster Lösungsansatz:
             if(abs(d) > 0):
                 # W1 anpassen
@@ -95,4 +92,9 @@ if __name__ == '__main__':
                 # W2 anpassen
                 partial_w2 = partInt(y_caret,y, input[i].y)
                 w2 -= (lr * partial_w2)
-            '''
+            
+            # Ausgabe
+            print(f"Weights:{w1},{w2} -> {input[i].x * w1 + input[i].y * w2}")
+            print(f"Aktuelles Ergebnis: {input[0].x * w1},{input[0].y * w2}")
+            print("##############")
+            
