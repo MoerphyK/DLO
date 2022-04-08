@@ -64,26 +64,6 @@ if __name__ == '__main__':
             d = y_caret-y
 
             print(f"Abweichung y-^y: {d}")
-
-            '''
-            ## Zweiter Lösungsansatz
-            # Part Ableitung nach W1 -> Falls positiv w1 verkleinern
-            partial_w1 = partInt(y_caret, y, input[i].x)
-            if (partial_w1 > 0):
-                # W1 anpassen
-                w1 -= (lr * partial_w1)
-            else:
-                w1 += (lr * partial_w1)
-
-            # Part Ableitung nach W2 -> Falls positiv w2 verkleinern
-            partial_w2 = partInt(y_caret, y, input[i].y)
-            if (partial_w2 > 0):
-                # W2 anpassen
-                w2 -= (lr * partial_w2)
-            else:
-                w2 += (lr * partial_w2)
-
-            '''
             
             ## Erster Lösungsansatz:
             if(abs(d) > 0):
