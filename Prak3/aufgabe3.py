@@ -89,5 +89,5 @@ if __name__ == '__main__':
 
         print(f"Weights:{weights}")
         print(f"Input:{input}")
-        print(f"Current: {y_caret}; Target m = {m}: {y}; Target all: {y_all}")
+        print(f"Current: {y_caret}; Target m: {y}; Target all: {y_all}")
         print("##############")
